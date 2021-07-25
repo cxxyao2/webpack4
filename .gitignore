@@ -1,2 +1,9 @@
 # dependencies
 /node_modules
+
+
+# compiled output
+/build
+/dist
+/tmp
+/out-tsc
