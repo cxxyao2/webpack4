@@ -41,4 +41,16 @@ module.exports = {
   },
   plugins: [new HtmlWebpackPlugin({ template: './src/index.html' })],
   mode: 'development',
+
+  // development server (automatically bundled, fresh browser)
+  // bundled files only exist in memory ,not in build folder
+  // $npx webpack-dev-server
+  devServer: {
+    contentBase: resolve(__dirname, 'build'),
+    // gzip
+    compress: true,
+    port: 3000,
+    // automatically open a local browser
+    open: true,
+  },
 };
