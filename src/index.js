@@ -1,4 +1,5 @@
 // import '@babel/polyfill';
+import './assets/index.css';
 
 const add = (x, y) => x + y;
 
