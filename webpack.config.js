@@ -19,7 +19,16 @@ module.exports = {
         options: {
           // if image size < 8M, compile it to base64 string
           limit: 8 * 1024,
+          // url-loader default es6 ==> <img src=[object Module] />
+          // commonjs
+          esModule: true,
+          // [ext]the extension of initial image file
+          name: '[hash:10].[ext]',
         },
+      },
+      {
+        test: /\.html$/,
+        loader: 'html-loader',
       },
     ],
   },
