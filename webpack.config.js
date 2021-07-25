@@ -1,6 +1,7 @@
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtraPlugin = require('mini-css-extract-plugin');
+const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
 
 // set environment variable
 process.env.NODE_ENV = 'development';
@@ -38,6 +39,7 @@ module.exports = {
       // rename output file
       filename: 'css/build.css',
     }),
+    new OptimizeCssAssetsWebpackPlugin(),
   ],
   mode: 'development',
 
