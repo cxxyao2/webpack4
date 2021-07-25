@@ -16,7 +16,8 @@ const commonCssLoader = [
     loader: 'postcss-loader',
     options: {
       postcssOptions: {
-        plugins: ['postcss-preset-env', {}],
+        ident: 'postcss',
+        plugins: ['postcss-preset-env'],
       },
     },
   },
@@ -97,7 +98,7 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'css/build.css',
+      filename: 'build.css',
     }),
     new OptimizeCssAssetsWebpackPlugin(),
     new HtmlWebpackPlugin({
