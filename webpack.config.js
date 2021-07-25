@@ -1,6 +1,4 @@
-// focus on babel. transpile from js2016 to js5.
-//  an arrow function () => this will be turned into an equivalent function expression
-// if target is ES5 or lower
+// compress js file. mode = "production"
 
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -11,37 +9,18 @@ module.exports = {
     filename: 'js/built.js',
     path: resolve(__dirname, 'build'),
   },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader',
-        options: {
-          presets: [
-            [
-              '@babel/preset-env',
-              {
-                // load the polypill needed
-                useBuiltIns: 'usage',
-                corejs: { version: 3 },
-                // compatible verison
-                targets: {
-                  chrome: '60',
-                  firefox: '50',
-                  ie: '9',
-                  safari: '10',
-                  edge: '17',
-                },
-              },
-            ],
-          ],
-        },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+      // compress .html file
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true,
       },
-    ],
-  },
-  plugins: [],
-  mode: 'development',
+    }),
+  ],
+  // compress .js file
+  mode: 'production',
 
   // development server (automatically bundled, fresh browser)
   // bundled files only exist in memory ,not in build folder
