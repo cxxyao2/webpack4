@@ -21,9 +21,9 @@ const commonCssLoader = [
 ];
 
 module.exports = {
-  entry: ['./src/index.js', './src/index.html'],
+  entry: ['./src/index.js'],
   output: {
-    filename: 'js/built.js',
+    filename: 'js/built.[contenthash:10].js',
     path: resolve(__dirname, 'build'),
   },
   module: {
@@ -70,6 +70,9 @@ module.exports = {
                   },
                 ],
               ],
+              // babel cache
+              // the second build will read the first cache
+              cacheDirectory: true,
             },
           },
           {
@@ -99,7 +102,7 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'build.css',
+      filename: 'build.[contenthash:10].css',
     }),
     new OptimizeCssAssetsWebpackPlugin(),
     new HtmlWebpackPlugin({
@@ -125,7 +128,6 @@ module.exports = {
     port: 3000,
     // automatically open a local browser
     open: true,
-
     // hot module replace, only replace the changed file
     hot: true,
   },
