@@ -31,9 +31,12 @@ module.exports = {
         loader: 'html-loader',
       },
       {
-        exclude:/\.(less|css|html|js|jpg|pgn|gif)$/,
-        loader:'file-loader'
-      }
+        exclude: /\.(less|css|html|js|jpg|pgn|gif)$/,
+        loader: 'file-loader',
+        options: {
+          name: '[hash:10].[ext]',
+        },
+      },
     ],
   },
   plugins: [new HtmlWebpackPlugin({ template: './src/index.html' })],
