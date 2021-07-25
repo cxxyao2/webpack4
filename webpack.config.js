@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   entry: './src/index.js',
   output: {
-    filename: 'built.js',
+    filename: 'js/built.js',
     path: resolve(__dirname, 'build'),
   },
   module: {
@@ -24,9 +24,11 @@ module.exports = {
           esModule: true,
           // [ext]the extension of initial image file
           name: '[hash:10].[ext]',
+          outputPath: 'imgs',
         },
       },
       {
+        // extract images in <img src=""  />
         test: /\.html$/,
         loader: 'html-loader',
       },
@@ -35,6 +37,7 @@ module.exports = {
         loader: 'file-loader',
         options: {
           name: '[hash:10].[ext]',
+          outputPath: 'media',
         },
       },
     ],
