@@ -24,7 +24,7 @@ const commonCssLoader = [
 ];
 
 module.exports = {
-  entry: './src/index.js',
+  entry: ['./src/index.js', './src/index.html'],
   output: {
     filename: 'js/built.js',
     path: resolve(__dirname, 'build'),
@@ -123,6 +123,8 @@ module.exports = {
     port: 3000,
     // automatically open a local browser
     open: true,
+
+    // hot module replace, only replace the changed file
     hot: true,
   },
 };
