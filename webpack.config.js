@@ -127,4 +127,5 @@ module.exports = {
     // hot module replace, only replace the changed file
     hot: true,
   },
+  devtool: 'source-map',
 };
