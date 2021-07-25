@@ -1,10 +1,9 @@
+// focus on babel. transpile from js2016 to js5.
+//  an arrow function () => this will be turned into an equivalent function expression
+// if target is ES5 or lower
+
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtraPlugin = require('mini-css-extract-plugin');
-const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
-
-// set environment variable
-process.env.NODE_ENV = 'development';
 
 module.exports = {
   entry: './src/index.js',
@@ -17,27 +16,31 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        enforce: 'pre',
-        loader: 'eslint-loader',
+        loader: 'babel-loader',
         options: {
-          // automatically fix errors
-          fix: true,
+          presets: [
+            [
+              '@babel/preset-env',
+              {
+                // load the polypill needed
+                useBuiltIns: 'usage',
+                corejs: { version: 3 },
+                // compatible verison
+                targets: {
+                  chrome: '60',
+                  firefox: '50',
+                  ie: '9',
+                  safari: '10',
+                  edge: '17',
+                },
+              },
+            ],
+          ],
         },
-      },
-      {
-        test: /\.css$/,
-        use: [MiniCssExtraPlugin.loader, 'css-loader'],
       },
     ],
   },
-  plugins: [
-    new HtmlWebpackPlugin({ template: './src/index.html' }),
-    new MiniCssExtraPlugin({
-      // rename output file
-      filename: 'css/build.css',
-    }),
-    new OptimizeCssAssetsWebpackPlugin(),
-  ],
+  plugins: [],
   mode: 'development',
 
   // development server (automatically bundled, fresh browser)

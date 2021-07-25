@@ -1,12 +1,24 @@
-import './assets/index.css';
+// import '@babel/polyfill';
 
-// eslint-disable-next-line
-function minus(a, b) {
-  return b - a;
-}
+const add = (x, y) => x + y;
 
-function add(a, b) {
-  return a + b;
-}
+console.log(add(2, 5));
 
-console.log('2+3=', add(2, 3));
+const promise = new Promise((resolve) => {
+  setTimeout(() => {
+    console.log('Timer is executed...');
+    resolve(true);
+  }, 1000);
+});
+
+console.log(promise);
+
+promise
+  .then((value) => console.log('value is ' && value))
+  .catch((error) => console.log('error is' && error));
+
+// output
+//   7
+// Promise { <state>: "pending" }
+//   Timer is executed...
+//   true
