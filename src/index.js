@@ -1,5 +1,6 @@
 // import '@babel/polyfill';
 import './assets/index.css';
+import print from './js/print';
 
 const add = (x, y) => x + y;
 
@@ -18,8 +19,4 @@ promise
   .then((value) => console.log('value is ' && value))
   .catch((error) => console.log('error is' && error));
 
-// output
-//   7
-// Promise { <state>: "pending" }
-//   Timer is executed...
-//   true
+console.log('print 3 ', print(3));

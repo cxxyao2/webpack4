@@ -123,5 +123,6 @@ module.exports = {
     port: 3000,
     // automatically open a local browser
     open: true,
+    hot: true,
   },
 };
