@@ -1,12 +1,9 @@
-// compress js file. mode = "production"
+// optimization. oneOf. speed up the bundling
 
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
-
-// define environment variable
-process.env.NODE_ENV = 'production';
 
 // reusable loader
 const commonCssLoader = [
@@ -32,14 +29,6 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: [...commonCssLoader],
-      },
-      {
-        test: /\.less$/,
-        use: [...commonCssLoader, 'less-loader'],
-      },
-      {
         test: /\.js$/,
         exclude: /node_modules/,
         enforce: 'pre',
@@ -49,50 +38,62 @@ module.exports = {
         },
       },
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader',
-        options: {
-          presets: [
-            [
-              '@babel/preset-env',
-              {
-                // load the polypill needed
-                useBuiltIns: 'usage',
-                corejs: { version: 3 },
-                // compatible verison
-                targets: {
-                  chrome: '60',
-                  firefox: '50',
-                  ie: '9',
-                  safari: '10',
-                  edge: '17',
-                },
-              },
-            ],
-          ],
-        },
-      },
-      {
-        test: /\.(jpg|png|gif)$/,
-        loader: 'url-loader',
-        options: {
-          limit: 8 * 1024,
-          name: '[hash:10].[ext]',
-          outputPath: 'imgs',
-          esModule: false,
-        },
-      },
-      {
-        test: /\.html$/,
-        loader: 'html-loader',
-      },
-      {
-        exclude: /\.(js|css|less|html|jpg|png|gif)/,
-        loader: 'file-loader',
-        options: {
-          outputPath: 'media',
-        },
+        oneOf: [
+          {
+            test: /\.css$/,
+            use: [...commonCssLoader],
+          },
+          {
+            test: /\.less$/,
+            use: [...commonCssLoader, 'less-loader'],
+          },
+          {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                [
+                  '@babel/preset-env',
+                  {
+                    // load the polypill needed
+                    useBuiltIns: 'usage',
+                    corejs: { version: 3 },
+                    // compatible verison
+                    targets: {
+                      chrome: '60',
+                      firefox: '50',
+                      ie: '9',
+                      safari: '10',
+                      edge: '17',
+                    },
+                  },
+                ],
+              ],
+            },
+          },
+          {
+            test: /\.(jpg|png|gif)$/,
+            loader: 'url-loader',
+            options: {
+              limit: 8 * 1024,
+              name: '[hash:10].[ext]',
+              outputPath: 'imgs',
+              esModule: false,
+            },
+          },
+          {
+            test: /\.html$/,
+            loader: 'html-loader',
+          },
+          {
+            exclude: /\.(js|css|less|html|jpg|png|gif)/,
+            loader: 'file-loader',
+            options: {
+              outputPath: 'media',
+            },
+          },
+        ],
       },
     ],
   },
@@ -110,6 +111,7 @@ module.exports = {
       },
     }),
   ],
+
   // compress .js file
   mode: 'production',
 
