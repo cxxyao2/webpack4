@@ -1,9 +1,15 @@
-// optimization. oneOf. speed up the bundling
+// optimization. treeShaking.
+// 1,mode: production
+// 2,es6 module
+// 3,for not tree shake the .css files,
+// package.json sideEffects:["*.css"]
 
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
+
+process.env.NODE_ENV = 'production';
 
 // reusable loader
 const commonCssLoader = [
