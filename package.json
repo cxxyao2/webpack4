@@ -40,5 +40,17 @@
     "file-loader": "^5.1.0",
     "url-loader": "^4.0.0",
     "webpack-dev-server": "^3.11.0"
+  },
+  "browserslist": {
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ],
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ]
   }
 }

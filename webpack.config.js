@@ -2,6 +2,9 @@ const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtraPlugin = require('mini-css-extract-plugin');
 
+// set environment variable
+process.env.NODE_ENV = 'development';
+
 module.exports = {
   entry: './src/index.js',
   output: {
@@ -13,40 +16,19 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          // create style tag ,<style>..</style>, insert into .html file
-          // 'style-loader',
-          // extract css into an independent file, not into style tag
           MiniCssExtraPlugin.loader,
-          // put css into js file. In .js file, import './**.css';
           'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              plugins: () => [
+                // help postcss find  browserslist in package.json
+                require('postcss-preset-env')(),
+              ],
+            },
+          },
         ],
-      },
-      {
-        test: /\.(jpg|png|gif)$/,
-        loader: 'url-loader',
-        options: {
-          // if image size < 8M, compile it to base64 string
-          limit: 8 * 1024,
-          // url-loader default es6 ==> <img src=[object Module] />
-          // commonjs
-          esModule: true,
-          // [ext]the extension of initial image file
-          name: '[hash:10].[ext]',
-          outputPath: 'imgs',
-        },
-      },
-      {
-        // extract images in <img src=""  />
-        test: /\.html$/,
-        loader: 'html-loader',
-      },
-      {
-        exclude: /\.(less|css|html|js|jpg|pgn|gif)$/,
-        loader: 'file-loader',
-        options: {
-          name: '[hash:10].[ext]',
-          outputPath: 'media',
-        },
       },
     ],
   },
