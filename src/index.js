@@ -1,4 +1,4 @@
-import './assets/index.less';
+import './assets/index.css';
 
 function add(a, b) {
   return a + b;

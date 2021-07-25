@@ -1,5 +1,6 @@
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtraPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: './src/index.js',
@@ -10,8 +11,15 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.less$/,
-        use: ['style-loader', 'css-loader', 'less-loader'],
+        test: /\.css$/,
+        use: [
+          // create style tag ,<style>..</style>, insert into .html file
+          // 'style-loader',
+          // extract css into an independent file, not into style tag
+          MiniCssExtraPlugin.loader,
+          // put css into js file. In .js file, import './**.css';
+          'css-loader',
+        ],
       },
       {
         test: /\.(jpg|png|gif)$/,
@@ -42,7 +50,13 @@ module.exports = {
       },
     ],
   },
-  plugins: [new HtmlWebpackPlugin({ template: './src/index.html' })],
+  plugins: [
+    new HtmlWebpackPlugin({ template: './src/index.html' }),
+    new MiniCssExtraPlugin({
+      // rename output file
+      filename: 'css/build.css',
+    }),
+  ],
   mode: 'development',
 
   // development server (automatically bundled, fresh browser)
