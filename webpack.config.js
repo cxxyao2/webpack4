@@ -15,21 +15,18 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        enforce: 'pre',
+        loader: 'eslint-loader',
+        options: {
+          // automatically fix errors
+          fix: true,
+        },
+      },
+      {
         test: /\.css$/,
-        use: [
-          MiniCssExtraPlugin.loader,
-          'css-loader',
-          {
-            loader: 'postcss-loader',
-            options: {
-              ident: 'postcss',
-              plugins: () => [
-                // help postcss find  browserslist in package.json
-                require('postcss-preset-env')(),
-              ],
-            },
-          },
-        ],
+        use: [MiniCssExtraPlugin.loader, 'css-loader'],
       },
     ],
   },
