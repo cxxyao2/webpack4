@@ -30,6 +30,10 @@ module.exports = {
         test: /\.html$/,
         loader: 'html-loader',
       },
+      {
+        exclude:/\.(less|css|html|js|jpg|pgn|gif)$/,
+        loader:'file-loader'
+      }
     ],
   },
   plugins: [new HtmlWebpackPlugin({ template: './src/index.html' })],
