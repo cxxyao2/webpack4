@@ -1,7 +1,5 @@
 // code split
-// entry: index.js
-// splitChunks: bundle the package in node_modules separately
-// if multiple files in entry, the common dependency will be bundled only once.
+// entry: multiple .js files ==> output multiple .js files
 
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -9,7 +7,10 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: {
+    index: './src/index.js',
+    test: './src/js/print.js',
+  },
   output: {
     filename: 'js/[name].[contenthash:10].js',
     path: resolve(__dirname, 'build'),
@@ -24,11 +25,6 @@ module.exports = {
       },
     }),
   ],
-  optimization: {
-    splitChunks: {
-      chunks: 'all',
-    },
-  },
 
   // compress .js file
   mode: 'production',

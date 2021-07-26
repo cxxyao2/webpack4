@@ -38,6 +38,7 @@
     "core-js": "^3.6.5",
     "express": "^4.17.1",
     "file-loader": "^5.1.0",
+    "jquery": "^3.6.0",
     "nodemon": "^2.0.12",
     "url-loader": "^4.0.0",
     "webpack-dev-server": "^3.11.0"
