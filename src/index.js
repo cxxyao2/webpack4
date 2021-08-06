@@ -1,23 +1,19 @@
-import print from './js/print';
-import $ from 'jquery';
+console.log('index.js is loaded');
 
-function sum(...args) {
-  return args.reduce((p, c) => p + c, 0);
-}
+// import { multi } from './js/test';
 
-// eslint-disable-next-line;
-console.log(sum(1, 2, 3));
+// lazy loading
+// document.getElementById('btn').onclick = function () {
+//   import(/* webpackChunkName: 'test' */ './js/test').then(({ multi }) => {
+//     console.log(multi(3, 4));
+//   });
+// };
 
-// eslint-disable-next-line;
-console.log('hello');
-
-console.log(print(2));
-
-console.log($);
-
-// webpackChunkName: bundled output file name
-import(/* webpackChunkName: 'test' */ './js/test')
-  .then((result) => {
-    console.log('test.js ok', result);
-  })
-  .catch((error) => console.log('test.js loading failed'));
+// preloading
+document.getElementById('btn').onclick = function () {
+  import(
+    /* webpackChunkName: 'test', webpackPrefetch:true  */ './js/test'
+  ).then(({ multi }) => {
+    console.log(multi(3, 4));
+  });
+};

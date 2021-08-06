@@ -1,12 +1,7 @@
-// code split
-// entry: index.js
-// splitChunks: bundle the package in node_modules separately
-// if multiple files in entry, the common dependency will be bundled only once.
-
+// lazy loading
+//
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js',
@@ -30,6 +25,6 @@ module.exports = {
     },
   },
 
-  // compress .js file
+  // compress .js file, tree shaking, exclude not used js files
   mode: 'production',
 };
