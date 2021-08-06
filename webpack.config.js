@@ -1,5 +1,10 @@
-// compress js file. mode = "production"
-
+// HMR: HOT MODULE replacement
+// css: HMR OK
+// html: default no HMR
+// js: default no HMR
+// entry: js,html separated
+// html只有一个文件，没法优化，设置为多入口没有效果
+// 修改js代码，来支持HMR
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');

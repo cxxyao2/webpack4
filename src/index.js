@@ -1,12 +1,13 @@
 import './assets/index.css';
+import './assets/box.less';
 
-const add = (x, y) => x + y;
+import print from './js/print';
 
-console.log(add(2, 5));
+console.log('index.js is loaded.');
 
-if (module.hot) {
-  module.hot.accept('./js/print.js', () => {
-    // do something
-    print(5);
-  });
+print();
+
+function add(a, b) {
+  return a + b;
 }
+console.log(add(1, 2));
