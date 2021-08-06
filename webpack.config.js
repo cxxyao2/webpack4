@@ -55,30 +55,39 @@ module.exports = {
           {
             test: /\.js$/,
             exclude: /node_modules/,
-            loader: 'babel-loader',
-            options: {
-              presets: [
-                [
-                  '@babel/preset-env',
-                  {
-                    // load the polypill needed
-                    useBuiltIns: 'usage',
-                    corejs: { version: 3 },
-                    // compatible verison
-                    targets: {
-                      chrome: '60',
-                      firefox: '50',
-                      ie: '9',
-                      safari: '10',
-                      edge: '17',
-                    },
-                  },
-                ],
-              ],
-              // babel cache
-              // the second build will read the first cache
-              cacheDirectory: true,
-            },
+            use: [
+              /* 开启多进程打包
+              进程启动大概为600ms,进程间通讯也有时间
+              只有工作消耗时间比较长，才需要多进程打包
+              */
+              { loader: 'thread-loader', options: { workers: 2 } },
+              {
+                loader: 'babel-loader',
+                options: {
+                  presets: [
+                    [
+                      '@babel/preset-env',
+                      {
+                        // load the polypill needed
+                        useBuiltIns: 'usage',
+                        corejs: { version: 3 },
+                        // compatible verison
+                        targets: {
+                          chrome: '60',
+                          firefox: '50',
+                          ie: '9',
+                          safari: '10',
+                          edge: '17',
+                        },
+                      },
+                    ],
+                  ],
+                  // babel cache
+                  // the second build will read the first cache
+                  cacheDirectory: true,
+                },
+              },
+            ],
           },
           {
             test: /\.(jpg|png|gif)$/,
