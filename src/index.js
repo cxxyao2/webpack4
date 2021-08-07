@@ -1,4 +1,7 @@
 console.log('index.js is loaded');
+// import './assets/index.css';
+// 因为在webpack.config.js中配置了resolve，此时路径可以简写为
+import '$css/index.css';
 
 import { multi } from './js/test';
 import $ from 'jquery';
