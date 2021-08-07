@@ -1,80 +1,169 @@
-//  externals
-
+// optimization. oneOf. speed up the bundling
+// terser-webpack-plugin version5 有问题，要用4
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserWebpackPlugin = require('terser-webpack-plugin');
+const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
+
+// reusable loader
+const commonCssLoader = [
+  MiniCssExtractPlugin.loader,
+  'css-loader',
+  {
+    loader: 'postcss-loader',
+    options: {
+      postcssOptions: {
+        ident: 'postcss',
+        plugins: ['postcss-preset-env'],
+      },
+    },
+  },
+];
 
 module.exports = {
   entry: './src/index.js',
   output: {
-    // 文件名称(指定名称 + 目录)
-    filename: 'js/[name].js',
-    // 输出文件目录(将来所有资源输出的公共目录)
+    filename: 'js/[name].[contenthash:10].js',
     path: resolve(__dirname, 'build'),
+    chunkFilename: 'js/[name].[contenthash:10]_chunk.js',
   },
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        test: /\.js$/,
+        exclude: /node_modules/,
+        enforce: 'pre',
+        loader: 'eslint-loader',
+        options: {
+          fix: true,
+        },
+      },
+      {
+        oneOf: [
+          {
+            test: /\.css$/,
+            use: [...commonCssLoader],
+          },
+          {
+            test: /\.less$/,
+            use: [...commonCssLoader, 'less-loader'],
+          },
+          {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                [
+                  '@babel/preset-env',
+                  {
+                    // load the polypill needed
+                    useBuiltIns: 'usage',
+                    corejs: { version: 3 },
+                    // compatible verison
+                    targets: {
+                      chrome: '60',
+                      firefox: '50',
+                      ie: '9',
+                      safari: '10',
+                      edge: '17',
+                    },
+                  },
+                ],
+              ],
+            },
+          },
+          {
+            test: /\.(jpg|png|gif)$/,
+            loader: 'url-loader',
+            options: {
+              limit: 8 * 1024,
+              name: '[hash:10].[ext]',
+              outputPath: 'imgs',
+              esModule: false,
+            },
+          },
+          {
+            test: /\.html$/,
+            loader: 'html-loader',
+          },
+          {
+            exclude: /\.(js|css|less|html|jpg|png|gif)/,
+            loader: 'file-loader',
+            options: {
+              outputPath: 'media',
+            },
+          },
+        ],
       },
     ],
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'build.css',
+    }),
+    new OptimizeCssAssetsWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './src/index.html',
+      // compress .html file
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true,
+      },
     }),
   ],
-  mode: 'development',
-  //解析模板的规则,
-  // 简化文件查找路径1
-  // 缺点是：写路径时的提示失效
-  resolve: {
-    alias: {
-      $css: resolve(__dirname, 'src/assets'),
+
+  // compress .js file
+  mode: 'production',
+
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+
+      // 以下默认值，可以不写
+      // minSize: 30 * 1024, // 分割的chunk最小为30kb，
+      // maxSize: 0, // 最大没有限制
+      // minChunks: 1, // 要提取的chunk最少被引用1次
+      // maxAsyncRequests: 5, // 按需下载时并行加载的文件的最大数量为5
+      // maxInitialRequests: 3, // 入口js文件最大并行请求数量
+      // automaticNameDelimiter: '~', // 名称链接符号
+      // name: true, // 可以使用命名规则
+      // cacheGroups: {
+      //   // 分割chunk的组
+      //   // node_modules文件会被打包到 vendors组的chunk中. -->vendors~xxx.js
+      //   // 满足上面的公共规则,如大小超过30KB,至少被引用一次
+      //   vendors: {
+      //     test: /[\\/]node_modules[\\/]/,
+      //     priority: -10,
+      //   },
+      //   default: {
+      //     // 要提取的chunk最少被引用2次，这个规则覆盖上面的提取一次的规则
+      //     minChunks: 2,
+      //     // 优先级别
+      //     priority: -20,
+      //     // 如果当前要打包的模块,和之前已经被提取的模块是同一个,就复用而不是重新打包
+      //     reuseExistingChunk: true,
+      //   },
+      // },
     },
-    // 配置省略文件的扩展名
-    // 所以不同文件最好不要同名
-    extensions: ['js', 'css', 'json', 'jsx'],
-    // 告诉webpack解析模块去找哪个目录
-    modules: [resolve(__dirname, '../node_modules'), 'node_modules'],
-  },
-  devServer: {
-    // 运行代码的目录
-    contentBase: resolve(__dirname, 'build'),
-    // 监视 contentBase下所有文件,有变化就重新打包
-    watchContentBase: true,
-    //  忽略文件
-    watchOptions: {
-      // 忽略文件
-      ignored: /node_modules/,
+    // 将当前模块的记录其他模块的hash单独打包为一个文件 runtime
+    // 问题：修改a.js文件导致b.js文件打包后hash值变化，
+    // 修改配置后：a.js文件变了，重新打包后只有a.js和runtime.js这两个文件的hash值变,问题解决
+    runtimeChunk: {
+      name: (entrypoint) => `runtime-${entrypoint.name}`,
     },
-    // 启动gzip压缩
-    compress: true,
-    // 端口号
-    port: 5000,
-    // 域名
-    host: 'localhost',
-    // 自动打开浏览器
-    open: true,
-    // 开启hmr
-    hot: true,
-    // 不要 显示启动服务器日志
-    clientLogLevel: 'none',
-    // 除了一些基本启动信息以外,其他内容不要显示
-    quiet: true,
-    // 如果出错了,不要全屏提示
-    overlay: false,
-    // 服务器代理 -> 解决开发环境的跨域问题， 服务器与服务器之间是没有跨域问题的
-    // 一旦devServer(5000)服务器收到'/api/XXX'
-    // 把请求转发到另外一个服务器 localhost:3000
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3000',
-        // 请求路径时重写,将 /api/xxx -> /xxx （去掉api）
-        pathRewrite: {
-          '^/api': '',
-        },
-      },
-    },
+    minimizer: [
+      // 配置当前生产环境的压缩方案 js 和css
+      new TerserWebpackPlugin({
+        // 开启缓存
+        cache: true,
+        // 开启多进程打包
+        parallel: true,
+        // 启动source-map
+
+        sourceMap: true,
+      }),
+    ],
   },
 };
