@@ -26,7 +26,7 @@ module.exports = {
   ],
   mode: 'development',
   //解析模板的规则,
-  // 简化文件查找路径
+  // 简化文件查找路径1
   // 缺点是：写路径时的提示失效
   resolve: {
     alias: {
